@@ -92,76 +92,76 @@ const HomeScreen = () => {
         const isPositive = metric.change.includes("+");
 
         return (
-            <SafeAreaView>
-                <View style={styles.metricItem}>
-                    <View style={styles.metricHeader}>
-                        <View style={styles.metricIconContainer}>
-                            <MaterialCommunityIcons name={metric.icon} size={24} color={Colors.primary} />
-                        </View>
-                        <View style={styles.metricTitleContainer}>
-                            <Text style={styles.metricTitle}>{metric.title}</Text>
-                            <Text style={[styles.metricStatus,
-                            metric.status === "Excellent" ? styles.statusExcellent :
-                                metric.status === "Good" ? styles.statusGood :
-                                    styles.statusFair]}>
-                                {metric.status}
-                            </Text>
-                        </View>
-                        <View style={styles.metricScoreContainer}>
-                            <Text style={styles.metricScore}>{metric.score}/{metric.maxScore}</Text>
-                            <Text style={[styles.metricChange, isPositive ? styles.positive : styles.negative]}>
-                                {isPositive ? "↗" : "↘"} {metric.change}
-                            </Text>
-                        </View>
+            <View style={styles.metricItem}>
+                <View style={styles.metricHeader}>
+                    <View style={styles.metricIconContainer}>
+                        <MaterialCommunityIcons name={metric.icon} size={24} color={Colors.primary} />
                     </View>
-                    <Text style={styles.metricDescription}>{metric.description}</Text>
+                    <View style={styles.metricTitleContainer}>
+                        <Text style={styles.metricTitle}>{metric.title}</Text>
+                        <Text style={[styles.metricStatus,
+                        metric.status === "Excellent" ? styles.statusExcellent :
+                            metric.status === "Good" ? styles.statusGood :
+                                styles.statusFair]}>
+                            {metric.status}
+                        </Text>
+                    </View>
+                    <View style={styles.metricScoreContainer}>
+                        <Text style={styles.metricScore}>{metric.score}/{metric.maxScore}</Text>
+                        <Text style={[styles.metricChange, isPositive ? styles.positive : styles.negative]}>
+                            {isPositive ? "↗" : "↘"} {metric.change}
+                        </Text>
+                    </View>
                 </View>
-            </SafeAreaView>
+                <Text style={styles.metricDescription}>{metric.description}</Text>
+            </View>
         );
     };
 
     return (
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <View style={styles.scoreCard}>
+                    <Text style={styles.scoreTitle}>Your average driving score</Text>
+                    <View style={styles.scoreContainer}>
+                        <ProgressCircle progress={calculateProgress(score, 10)} size={220} strokeWidth={18} />
+                        <View style={styles.scoreTextContainer}>
+                            <Text style={styles.scoreStatus}>
+                                {score >= 8 ? "Excellent" : score >= 6 ? "Good" : score >= 4 ? "Fair" : "Poor"}
+                            </Text>
+                            <Text style={styles.scoreValue}>{score}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.scoreScale}>
+                        <Text style={styles.scoreMin}>0</Text>
+                        <View style={styles.improvementContainer}>
+                            <Ionicons name="trending-up" size={16} color={Colors.accent} />
+                            <Text style={styles.improvementText}>{improvement} points better than last month</Text>
+                        </View>
+                        <Text style={styles.scoreMax}>10</Text>
+                    </View>
+                </View>
+
+                <View style={styles.metricsContainer}>
+                    <Text style={styles.metricsTitle}>Driving metrics</Text>
+                    {metrics.map(metric => (
+                        <MetricItem key={metric.id} metric={metric} />
+                    ))}
+                </View>
+
+                <View style={styles.actionsContainer}>
+                    <TouchableOpacity style={styles.actionButton}>
+                        <FontAwesome5 name="tasks" size={20} color={Colors.primary} />
+                        <Text style={styles.actionText}>Complete Tasks</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.actionButton}>
+                        <MaterialCommunityIcons name="gift" size={20} color={Colors.primary} />
+                        <Text style={styles.actionText}>Claim Rewards</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
         // <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={styles.container}>
-            <View style={styles.scoreCard}>
-                <Text style={styles.scoreTitle}>Your average driving score</Text>
-                <View style={styles.scoreContainer}>
-                    <ProgressCircle progress={calculateProgress(score, 10)} size={220} strokeWidth={18} />
-                    <View style={styles.scoreTextContainer}>
-                        <Text style={styles.scoreStatus}>
-                            {score >= 8 ? "Excellent" : score >= 6 ? "Good" : score >= 4 ? "Fair" : "Poor"}
-                        </Text>
-                        <Text style={styles.scoreValue}>{score}</Text>
-                    </View>
-                </View>
-                <View style={styles.scoreScale}>
-                    <Text style={styles.scoreMin}>0</Text>
-                    <View style={styles.improvementContainer}>
-                        <Ionicons name="trending-up" size={16} color={Colors.accent} />
-                        <Text style={styles.improvementText}>{improvement} points better than last month</Text>
-                    </View>
-                    <Text style={styles.scoreMax}>10</Text>
-                </View>
-            </View>
-
-            <View style={styles.metricsContainer}>
-                <Text style={styles.metricsTitle}>Driving metrics</Text>
-                {metrics.map(metric => (
-                    <MetricItem key={metric.id} metric={metric} />
-                ))}
-            </View>
-
-            <View style={styles.actionsContainer}>
-                <TouchableOpacity style={styles.actionButton}>
-                    <FontAwesome5 name="tasks" size={20} color={Colors.primary} />
-                    <Text style={styles.actionText}>Complete Tasks</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.actionButton}>
-                    <MaterialCommunityIcons name="gift" size={20} color={Colors.primary} />
-                    <Text style={styles.actionText}>Claim Rewards</Text>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
         // </SafeAreaView>
     );
 };
