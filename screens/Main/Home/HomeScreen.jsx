@@ -3,15 +3,16 @@ import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Svg, Circle, Path } from "react-native-svg";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import Colors from "../../../constants/Colors";
-import Fonts from "../../../constants/Fonts";
+import Colors from "@constants/Colors";
+import Fonts from "@constants/Fonts";
 // import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
     const [score, setScore] = useState(8);
     const [improvement, setImprovement] = useState(2);
-    
+
     // Mock metrics data
     const [metrics, setMetrics] = useState([
         {
@@ -80,7 +81,7 @@ const HomeScreen = () => {
                     strokeDashoffset={progressOffset}
                     strokeLinecap="round"
                     rotation="-90"
-                    origin={`${size/2}, ${size/2}`}
+                    origin={`${size / 2}, ${size / 2}`}
                 />
             </Svg>
         );
@@ -89,31 +90,33 @@ const HomeScreen = () => {
     // Render a metric item
     const MetricItem = ({ metric }) => {
         const isPositive = metric.change.includes("+");
-        
+
         return (
-            <View style={styles.metricItem}>
-                <View style={styles.metricHeader}>
-                    <View style={styles.metricIconContainer}>
-                        <MaterialCommunityIcons name={metric.icon} size={24} color={Colors.primary} />
+            <SafeAreaView>
+                <View style={styles.metricItem}>
+                    <View style={styles.metricHeader}>
+                        <View style={styles.metricIconContainer}>
+                            <MaterialCommunityIcons name={metric.icon} size={24} color={Colors.primary} />
+                        </View>
+                        <View style={styles.metricTitleContainer}>
+                            <Text style={styles.metricTitle}>{metric.title}</Text>
+                            <Text style={[styles.metricStatus,
+                            metric.status === "Excellent" ? styles.statusExcellent :
+                                metric.status === "Good" ? styles.statusGood :
+                                    styles.statusFair]}>
+                                {metric.status}
+                            </Text>
+                        </View>
+                        <View style={styles.metricScoreContainer}>
+                            <Text style={styles.metricScore}>{metric.score}/{metric.maxScore}</Text>
+                            <Text style={[styles.metricChange, isPositive ? styles.positive : styles.negative]}>
+                                {isPositive ? "↗" : "↘"} {metric.change}
+                            </Text>
+                        </View>
                     </View>
-                    <View style={styles.metricTitleContainer}>
-                        <Text style={styles.metricTitle}>{metric.title}</Text>
-                        <Text style={[styles.metricStatus, 
-                            metric.status === "Excellent" ? styles.statusExcellent : 
-                            metric.status === "Good" ? styles.statusGood : 
-                            styles.statusFair]}>
-                            {metric.status}
-                        </Text>
-                    </View>
-                    <View style={styles.metricScoreContainer}>
-                        <Text style={styles.metricScore}>{metric.score}/{metric.maxScore}</Text>
-                        <Text style={[styles.metricChange, isPositive ? styles.positive : styles.negative]}>
-                            {isPositive ? "↗" : "↘"} {metric.change}
-                        </Text>
-                    </View>
+                    <Text style={styles.metricDescription}>{metric.description}</Text>
                 </View>
-                <Text style={styles.metricDescription}>{metric.description}</Text>
-            </View>
+            </SafeAreaView>
         );
     };
 

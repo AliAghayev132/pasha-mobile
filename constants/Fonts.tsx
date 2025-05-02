@@ -11,4 +11,5 @@ const Fonts = {
         Ultralight: "SFProDisplay-Ultralight"
     }
 }
+
 export default Fonts;
