@@ -5,8 +5,6 @@ import { Svg, Circle, Path } from "react-native-svg";
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
 import Colors from "@constants/Colors";
 import Fonts from "@constants/Fonts";
-// import { SafeAreaView } from "react-native-safe-area-context";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const HomeScreen = () => {
     const navigation = useNavigation();
@@ -119,7 +117,6 @@ const HomeScreen = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={styles.container}>
                 <View style={styles.scoreCard}>
                     <Text style={styles.scoreTitle}>Your average driving score</Text>
@@ -160,7 +157,6 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-        </SafeAreaView>
         // <SafeAreaView style={{ flex: 1 }}>
         // </SafeAreaView>
     );

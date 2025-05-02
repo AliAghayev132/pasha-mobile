@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import Colors from '@constants/Colors';
 import Fonts from '@constants/Fonts';
@@ -9,7 +8,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 const ProfileScreen = () => {
   return (
-    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header with profile photo */}
         <View style={styles.header}>
@@ -119,7 +117,6 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
       </ScrollView>
-    </SafeAreaView>
   );
 };
 
