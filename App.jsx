@@ -3,6 +3,10 @@ import { useFonts } from 'expo-font';
 // Navigation
 import AppNavigation from 'navigation/AppNavigation';
 
+import { store } from '@redux/store';
+
+import { Provider } from 'react-redux';
+
 export default function App() {
 
   const [loaded, error] = useFonts({
@@ -18,7 +22,9 @@ export default function App() {
   })
 
   return (
-    <AppNavigation />
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
   );
 }
 

@@ -5,6 +5,7 @@ const routes = {
     "home": ["home"],
     "profile": ["profile"],
     "insurance": ["insurance"],
+    "achievements": ["achievements"],
 }
 
 

@@ -7,7 +7,7 @@ import HomeScreen from '@screens/Main/Home/HomeScreen';
 import ProfileScreen from '@screens/Main/Profile/ProfileScreen';
 import DriverScoresScreen from '@screens/Main/DriverScore/DriverScoresScreen';
 import MainLayout from '@components/layouts/MainLayout/MainLayout';
-import InsuranceScreen from '@screens/Main/Inscurance/InscuranceScreen';
+import InsuranceScreen from '@screens/Main/Inscurance/InsuranceScreen';
 import AchievementsScreen from '@screens/Main/Achievements/AchievementsScreen';
 import MyVehiclesScreen from '@screens/Main/MyVehicles/MyVehiclesScreen';
 import HelpCenterScreen from '@screens/Main/HelpCenter/HelpCenterScreen';
@@ -18,13 +18,14 @@ import LanguageScreen from '@screens/Main/Language/LanguageScreen';
 import DocumentsScreen from '@screens/Main/Documents/DocumentsScreen';
 import ActivePoliciesScreen from '@screens/Main/ActivePolicies/ActivePoliciesScreen';
 import LevelRankScreen from '@screens/Main/LevelRank/LevelRankScreen';
+import InsuranceCoverageDetailsScreen from '@screens/InsuranceCoverageDetailsScreen';
 
 const Stack = createStackNavigator();
 
 const MainNavigation = ({ route }) => {
     return (
         <MainLayout route={route}>
-            <Stack.Navigator initialRouteName='language' screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName='insurance' screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="home" component={HomeScreen} />
                 <Stack.Screen name="profile" component={ProfileScreen} />
                 <Stack.Screen name='language' component={LanguageScreen} />
@@ -39,6 +40,7 @@ const MainNavigation = ({ route }) => {
                 <Stack.Screen name="paymentmethods" component={PaymentMethodsScreen} />
                 <Stack.Screen name='activepolicies' component={ActivePoliciesScreen} />
                 <Stack.Screen name='personalinformation' component={PersonalInformationScreen} />
+                <Stack.Screen name='insurancecoverage' component={InsuranceCoverageDetailsScreen} />
             </Stack.Navigator>
         </MainLayout>
     )

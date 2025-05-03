@@ -62,17 +62,17 @@ const BottomTabs = ({ route = "home" }) => {
                 icon={<HomeIcon color={route == "home" ? Colors.textLight : Colors.textMuted} />}
             />
             <BottomTab
-                text="Car"
+                text="Insurance"
                 route={"insurance"}
                 active={route == "insurance"}
                 icon={<CarIcon color={route == "insurance" ? Colors.textLight : Colors.textMuted} />}
 
             />
             <BottomTab
-                text="Features"
-                route="features"
-                active={route == "features"}
-                icon={<FeaturesIcon color={route == "features" ? Colors.textLight : Colors.textMuted} />}
+                text="Achievements"
+                route="achievements"
+                active={route == "achievements"}
+                icon={<FeaturesIcon color={route == "achievements" ? Colors.textLight : Colors.textMuted} />}
             />
             <BottomTab
                 text="Profile"
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     activeTab: {
-        backgroundColor: Colors.cornflower
+        backgroundColor: Colors.primary,
     },
     textContainer: {
         overflow: 'hidden',

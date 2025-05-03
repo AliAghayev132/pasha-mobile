@@ -5,10 +5,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import Colors from '@constants/Colors';
 import Fonts from '@constants/Fonts';
 import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 
 const ProfileScreen = () => {
   return (
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} style={styles.container} showsVerticalScrollIndicator={false}>
+        <StatusBar style="light" backgroundColor={Colors.primary} />
         {/* Header with profile photo */}
         <View style={styles.header}>
           <View style={styles.headerContent}>

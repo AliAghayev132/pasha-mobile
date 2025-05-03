@@ -8,6 +8,7 @@ import { NavigationContainer, createNavigationContainerRef } from "@react-naviga
 // React Hooks
 import { useState, useEffect } from "react";
 import AuthNavigation from "./AuthNavigation";
+import ModalProvider from "@contexts/ModalProvider";
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -30,13 +31,15 @@ const AppNavigation = () => {
 
 
 
-    return <NavigationContainer ref={navigationRef}>
-        <MainNavigation route={routeName} />
-        {/* <AuthNavigation /> */}
-        {/* {
+    return <ModalProvider>
+        <NavigationContainer ref={navigationRef}>
+            <MainNavigation route={routeName} />
+            {/* <AuthNavigation /> */}
+            {/* {
             test ? <MainNavigation /> : <MainNavigation />
         } */}
-    </NavigationContainer>
+        </NavigationContainer>
+    </ModalProvider>
 };
 
 export default AppNavigation;

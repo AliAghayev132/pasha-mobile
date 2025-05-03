@@ -1,26 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
+  TextInput,
+  Platform,
+  StatusBar,
   StyleSheet,
+  ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  TextInput,
-  StatusBar,
-  Image,
   KeyboardAvoidingView,
-  Platform,
-  ScrollView
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+
 import Colors from '@constants/Colors';
 import Fonts from '@constants/Fonts';
 
 const SignInScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+
+
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -30,9 +34,20 @@ const SignInScreen = ({ navigation }) => {
     setRememberMe(!rememberMe);
   };
 
+  const validatePassword = (text) => {
+    setPassword(text);
+    if (text.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+    } else {
+      setPasswordError('');
+    }
+  };
+
   const handleSignIn = () => {
-    // Handle sign in logic here
-    console.log('Sign in with:', email, password);
+    if (passwordError) {
+      return;
+    }
+    console.log('Sign in with:', username, password);
   };
 
   return (
@@ -42,33 +57,29 @@ const SignInScreen = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
       >
-        <ScrollView 
+        <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {/* Header with Logo */}
-          <View style={styles.logoContainer}>
-            <View style={styles.logoCircle}>
-              <Ionicons name="car-sport" size={60} color={Colors.primary} />
-            </View>
+          {/* Header with Welcome Text (centered) */}
+          <View style={styles.welcomeContainer}>
             <Text style={styles.welcomeText}>Welcome back</Text>
             <Text style={styles.subtitleText}>Sign in to your account</Text>
           </View>
 
           {/* Form */}
           <View style={styles.formContainer}>
-            {/* Email Input */}
+            {/* Username Input */}
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Email</Text>
+              <Text style={styles.inputLabel}>Username</Text>
               <View style={styles.inputWrapper}>
-                <Ionicons name="mail-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
+                <Ionicons name="person-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   placeholderTextColor={Colors.textMuted}
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
+                  value={username}
+                  onChangeText={setUsername}
                   autoCapitalize="none"
                 />
               </View>
@@ -77,14 +88,14 @@ const SignInScreen = ({ navigation }) => {
             {/* Password Input */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Password</Text>
-              <View style={styles.inputWrapper}>
+              <View style={[styles.inputWrapper, passwordError ? styles.inputError : null]}>
                 <Ionicons name="lock-closed-outline" size={20} color={Colors.textMuted} style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your password"
                   placeholderTextColor={Colors.textMuted}
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={validatePassword}
                   secureTextEntry={!passwordVisible}
                 />
                 <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
@@ -95,6 +106,7 @@ const SignInScreen = ({ navigation }) => {
                   />
                 </TouchableOpacity>
               </View>
+              {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
             </View>
 
             {/* Remember Me & Forgot Password */}
@@ -105,18 +117,20 @@ const SignInScreen = ({ navigation }) => {
                 </View>
                 <Text style={styles.rememberMeText}>Remember me</Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity onPress={() => navigation.navigate('forgot-password')}>
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>
 
             {/* Sign In Button */}
-            <TouchableOpacity style={styles.signInButton} onPress={handleSignIn}>
+            <TouchableOpacity
+              style={[styles.signInButton, passwordError ? styles.signInButtonDisabled : null]}
+              onPress={handleSignIn}
+              disabled={!!passwordError}
+            >
               <Text style={styles.signInButtonText}>Sign In</Text>
             </TouchableOpacity>
-
-     
 
             {/* Sign Up Link */}
             <View style={styles.signUpContainer}>
@@ -140,31 +154,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingBottom: 30,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 40,
-  },
-  logoCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: 'rgba(31, 149, 211, 0.1)',
     justifyContent: 'center',
+  },
+  welcomeContainer: {
+    marginTop: 60,
+    marginBottom: 40,
     alignItems: 'center',
-    marginBottom: 20,
   },
   welcomeText: {
     fontSize: 28,
-    fontFamily: Fonts.SfProDisplay.Bold,
-    color: Colors.textPrimary,
     marginBottom: 8,
+    textAlign: 'center',
+    color: Colors.textPrimary,
+    fontFamily: Fonts.SfProDisplay.Bold,
   },
   subtitleText: {
     fontSize: 16,
-    fontFamily: Fonts.SfProDisplay.Regular,
     color: Colors.textMuted,
+    fontFamily: Fonts.SfProDisplay.Regular,
   },
   formContainer: {
     paddingHorizontal: 24,
@@ -174,9 +181,9 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 14,
-    fontFamily: Fonts.SfProDisplay.Medium,
-    color: Colors.textPrimary,
     marginBottom: 8,
+    color: Colors.textPrimary,
+    fontFamily: Fonts.SfProDisplay.Medium,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -187,6 +194,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.05)',
     paddingHorizontal: 16,
     height: 56,
+  },
+  inputError: {
+    borderColor: 'red',
   },
   inputIcon: {
     marginRight: 12,
@@ -199,6 +209,13 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: 8,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 5,
+    marginLeft: 5,
+    fontFamily: Fonts.SfProDisplay.Regular,
   },
   optionsContainer: {
     flexDirection: 'row',
@@ -247,49 +264,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
+  signInButtonDisabled: {
+    backgroundColor: Colors.textMuted,
+    shadowOpacity: 0.1,
+  },
   signInButtonText: {
     fontFamily: Fonts.SfProDisplay.Semibold,
     fontSize: 16,
     color: Colors.textLight,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  dividerText: {
-    fontFamily: Fonts.SfProDisplay.Regular,
-    fontSize: 14,
-    color: Colors.textMuted,
-    marginHorizontal: 16,
-  },
-  socialButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.textLight,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.05)',
-    height: 56,
-    paddingHorizontal: 24,
-    width: '48%',
-  },
-  socialButtonText: {
-    fontFamily: Fonts.SfProDisplay.Medium,
-    fontSize: 14,
-    color: Colors.textPrimary,
-    marginLeft: 8,
   },
   signUpContainer: {
     flexDirection: 'row',
