@@ -1,13 +1,13 @@
 const Fonts = {
     SfProDisplay: {
-        Black: "SFProDisplay-Black",
         Bold: "SFProDisplay-Bold",
+        Thin: "SFProDisplay-Thin",
+        Black: "SFProDisplay-Black",
         Heavy: "SFProDisplay-Heavy",
         Light: "SFProDisplay-Light",
         Medium: "SFProDisplay-Medium",
         Regular: "SFProDisplay-Regular",
         Semibold: "SFProDisplay-Semibold",
-        Thin: "SFProDisplay-Thin",
         Ultralight: "SFProDisplay-Ultralight"
     }
 }

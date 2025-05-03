@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 // Icons
 import CarIcon from "@components/icons/CarIcon";
 import HomeIcon from "@components/icons/HomeIcon";
+import ProfileIcon from "@components/icons/ProfileIcon";
 import FeaturesIcon from "@components/icons/FeaturesIcon";
 // Constants
 import Fonts from "@constants/Fonts";
@@ -72,6 +73,12 @@ const BottomTabs = ({ route = "home" }) => {
                 route="features"
                 active={route == "features"}
                 icon={<FeaturesIcon color={route == "features" ? Colors.textLight : Colors.textMuted} />}
+            />
+            <BottomTab
+                text="Profile"
+                route={"profile"}
+                active={route == "profile"}
+                icon={<ProfileIcon color={route == "profile" ? Colors.textLight : Colors.textMuted} />}
             />
         </View>
     </>

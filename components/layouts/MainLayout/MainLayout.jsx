@@ -3,6 +3,7 @@ import BottomTabs from "./BottomTabs/BottomTabs";
 
 const routes = {
     "home": ["home"],
+    "profile": ["profile"],
     "insurance": ["insurance"],
 }
 

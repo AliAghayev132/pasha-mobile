@@ -1,339 +1,537 @@
-import { useNavigation } from "@react-navigation/native";
-import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Svg, Circle, Path } from "react-native-svg";
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import Colors from "@constants/Colors";
-import Fonts from "@constants/Fonts";
-// import { SafeAreaView } from "react-native-safe-area-context";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
+import Colors from '@constants/Colors';
+import Fonts from '@constants/Fonts';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
-    const navigation = useNavigation();
-    const [score, setScore] = useState(8);
-    const [improvement, setImprovement] = useState(2);
-
-    // Mock metrics data
-    const [metrics, setMetrics] = useState([
-        {
-            id: 1,
-            title: "Speed",
-            score: 10,
-            maxScore: 10,
-            status: "Excellent",
-            change: "+2",
-            icon: "speedometer",
-            description: "How fast you drive, and whether you're staying within the speed limit"
-        },
-        {
-            id: 2,
-            title: "Braking",
-            score: 8,
-            maxScore: 10,
-            status: "Good",
-            change: "+1",
-            icon: "car-brake-hold",
-            description: "How quickly you stop, and if you give yourself to slow down safely"
-        },
-        {
-            id: 3,
-            title: "Cornering",
-            score: 2,
-            maxScore: 10,
-            status: "Fair",
-            change: "-4",
-            icon: "rotate-right",
-            description: "How smoothly you turn, and whether you give yourself enough time"
-        }
-    ]);
-
-    // Calculate the progress for the circular progress indicator
-    const calculateProgress = (current, max) => {
-        return (current / max) * 100;
-    };
-
-    // Render the progress circle
-    const ProgressCircle = ({ progress, size = 200, strokeWidth = 15 }) => {
-        const radius = (size - strokeWidth) / 2;
-        const circumference = radius * 2 * Math.PI;
-        const progressOffset = circumference - (progress / 100) * circumference;
-
-        return (
-            <Svg width={size} height={size}>
-                {/* Background Circle */}
-                <Circle
-                    stroke={Colors.textSecondary}
-                    fill="none"
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    strokeWidth={strokeWidth}
-                />
-                {/* Progress Circle - starts from top (270 degrees rotation) */}
-                <Circle
-                    stroke={Colors.textLight}
-                    fill="none"
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    strokeWidth={strokeWidth}
-                    strokeDasharray={circumference}
-                    strokeDashoffset={progressOffset}
-                    strokeLinecap="round"
-                    rotation="-90"
-                    origin={`${size / 2}, ${size / 2}`}
-                />
-            </Svg>
-        );
-    };
-
-    // Render a metric item
-    const MetricItem = ({ metric }) => {
-        const isPositive = metric.change.includes("+");
-
-        return (
-            <View style={styles.metricItem}>
-                <View style={styles.metricHeader}>
-                    <View style={styles.metricIconContainer}>
-                        <MaterialCommunityIcons name={metric.icon} size={24} color={Colors.primary} />
-                    </View>
-                    <View style={styles.metricTitleContainer}>
-                        <Text style={styles.metricTitle}>{metric.title}</Text>
-                        <Text style={[styles.metricStatus,
-                        metric.status === "Excellent" ? styles.statusExcellent :
-                            metric.status === "Good" ? styles.statusGood :
-                                styles.statusFair]}>
-                            {metric.status}
-                        </Text>
-                    </View>
-                    <View style={styles.metricScoreContainer}>
-                        <Text style={styles.metricScore}>{metric.score}/{metric.maxScore}</Text>
-                        <Text style={[styles.metricChange, isPositive ? styles.positive : styles.negative]}>
-                            {isPositive ? "↗" : "↘"} {metric.change}
-                        </Text>
-                    </View>
-                </View>
-                <Text style={styles.metricDescription}>{metric.description}</Text>
-            </View>
-        );
-    };
-
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={styles.container}>
-                <View style={styles.scoreCard}>
-                    <Text style={styles.scoreTitle}>Your average driving score</Text>
-                    <View style={styles.scoreContainer}>
-                        <ProgressCircle progress={calculateProgress(score, 10)} size={220} strokeWidth={18} />
-                        <View style={styles.scoreTextContainer}>
-                            <Text style={styles.scoreStatus}>
-                                {score >= 8 ? "Excellent" : score >= 6 ? "Good" : score >= 4 ? "Fair" : "Poor"}
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                {/* Header Section */}
+                <View style={styles.headerContainer}>
+                    <View style={styles.header}>
+                        <View>
+                            <Text style={styles.headerGreeting}>Good morning,</Text>
+                            <Text style={styles.headerTitle}>James!</Text>
+                        </View>
+                        <View style={styles.headerActions}>
+                            <TouchableOpacity style={styles.notificationButton}>
+                                <View style={styles.notificationBadge} />
+                                <Ionicons name="notifications-outline" size={24} color={Colors.textLight} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+
+                {/* Recent Achievements Section */}
+                <View style={styles.sectionContainer}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Recent achievements</Text>
+                        <TouchableOpacity style={styles.viewAllButton}>
+                            <Text style={styles.viewAllText}>View all</Text>
+                            <Ionicons name="chevron-forward" size={16} color={Colors.primary} />
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.achievementsScrollView}>
+                        <View style={styles.achievementCard}>
+                            <View style={styles.achievementHeader}>
+                                <View style={styles.achievementIconContainer}>
+                                    <MaterialCommunityIcons name="trophy" size={28} color="#FFD700" />
+                                </View>
+                                <View style={styles.achievementPoints}>
+                                    <Text style={styles.achievementPointsText}>+250</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.achievementTitle}>Safe Driver</Text>
+                            <Text style={styles.achievementDescription}>
+                                Completed 50 trips without any incidents
                             </Text>
-                            <Text style={styles.scoreValue}>{score}</Text>
+                            <Text style={styles.achievementDate}>Earned today</Text>
                         </View>
+
+                        <View style={styles.achievementCard}>
+                            <View style={styles.achievementHeader}>
+                                <View style={styles.achievementIconContainer}>
+                                    <MaterialCommunityIcons name="star-circle" size={28} color="#4CD964" />
+                                </View>
+                                <View style={styles.achievementPoints}>
+                                    <Text style={styles.achievementPointsText}>+100</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.achievementTitle}>Early Bird</Text>
+                            <Text style={styles.achievementDescription}>
+                                Made all payments before due date for 3 months
+                            </Text>
+                            <Text style={styles.achievementDate}>Earned yesterday</Text>
+                        </View>
+
+                        <View style={styles.achievementCard}>
+                            <View style={styles.achievementHeader}>
+                                <View style={styles.achievementIconContainer}>
+                                    <MaterialCommunityIcons name="shield-check" size={28} color="#1F95D3" />
+                                </View>
+                                <View style={styles.achievementPoints}>
+                                    <Text style={styles.achievementPointsText}>+150</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.achievementTitle}>Premium Member</Text>
+                            <Text style={styles.achievementDescription}>
+                                Upgraded to premium insurance coverage
+                            </Text>
+                            <Text style={styles.achievementDate}>Earned last week</Text>
+                        </View>
+                    </ScrollView>
+                </View>
+
+                {/* Active Policies Section */}
+                <View style={styles.sectionContainer}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Active policies</Text>
+                        <TouchableOpacity style={styles.viewAllButton}>
+                            <Text style={styles.viewAllText}>View all</Text>
+                            <Ionicons name="chevron-forward" size={16} color={Colors.primary} />
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.scoreScale}>
-                        <Text style={styles.scoreMin}>0</Text>
-                        <View style={styles.improvementContainer}>
-                            <Ionicons name="trending-up" size={16} color={Colors.accent} />
-                            <Text style={styles.improvementText}>{improvement} points better than last month</Text>
+
+                    <View style={styles.policyCard}>
+                        <View style={styles.statusIndicator}>
+                            <View style={styles.statusDot} />
                         </View>
-                        <Text style={styles.scoreMax}>10</Text>
+                        <View style={styles.policyInfo}>
+                            <View style={styles.carImageContainer}>
+                                <MaterialCommunityIcons name="car" size={32} color={Colors.accent} />
+                            </View>
+                            <View style={styles.policyDetails}>
+                                <Text style={styles.carModel}>Toyota Camry</Text>
+                                <Text style={styles.licensePlate}>6ZZF977</Text>
+                                <View style={styles.policyStatusChip}>
+                                    <Text style={styles.policyStatusText}>Active</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <TouchableOpacity style={styles.arrowButton}>
+                            <View style={styles.arrowCircle}>
+                                <Ionicons name="chevron-forward" size={20} color={Colors.primary} />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.policyDateContainer}>
+                        <View style={styles.policyDateItem}>
+                            <View style={styles.dateIconContainer}>
+                                <Ionicons name="calendar-outline" size={18} color={Colors.primary} />
+                            </View>
+                            <View>
+                                <Text style={styles.policyDateLabel}>Policy ends</Text>
+                                <Text style={styles.policyDate}>15 Sept 2022</Text>
+                            </View>
+                        </View>
+                        <View style={styles.divider} />
+                        <View style={styles.policyDateItem}>
+                            <View style={styles.dateIconContainer}>
+                                <Ionicons name="card-outline" size={18} color={Colors.primary} />
+                            </View>
+                            <View>
+                                <Text style={styles.policyDateLabel}>Next payment</Text>
+                                <Text style={styles.policyDate}>15 June 2022</Text>
+                            </View>
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.metricsContainer}>
-                    <Text style={styles.metricsTitle}>Driving metrics</Text>
-                    {metrics.map(metric => (
-                        <MetricItem key={metric.id} metric={metric} />
-                    ))}
+                {/* Insurance Coverage Section */}
+                <View style={styles.sectionContainer}>
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Insurance coverage</Text>
+                        <TouchableOpacity style={styles.viewAllButton}>
+                            <Text style={styles.viewAllText}>Details</Text>
+                            <Ionicons name="chevron-forward" size={16} color={Colors.primary} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.coverageGrid}>
+                        <View style={styles.coverageCard}>
+                            <View style={[styles.coverageIconContainer, { backgroundColor: 'rgba(76, 217, 100, 0.1)' }]}>
+                                <Ionicons name="build-outline" size={24} color="#4CD964" />
+                            </View>
+                            <Text style={styles.coverageTitle}>Damage</Text>
+                            <Text style={styles.coverageDescription}>Covers damages from accidents</Text>
+                            <View style={[styles.coverageBadge, styles.basicBadge]}>
+                                <Text style={[styles.coverageBadgeText, { color: '#4CD964' }]}>Basic</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.coverageCard}>
+                            <View style={[styles.coverageIconContainer, { backgroundColor: 'rgba(255, 149, 0, 0.1)' }]}>
+                                <Ionicons name="flame-outline" size={24} color="#FF9500" />
+                            </View>
+                            <Text style={styles.coverageTitle}>Fire</Text>
+                            <Text style={styles.coverageDescription}>Protection against fire damage</Text>
+                            <View style={[styles.coverageBadge, styles.premiumBadge]}>
+                                <Text style={[styles.coverageBadgeText, { color: '#FF9500' }]}>Premium</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.coverageCard}>
+                            <View style={[styles.coverageIconContainer, { backgroundColor: 'rgba(90, 200, 250, 0.1)' }]}>
+                                <MaterialCommunityIcons name="water" size={24} color="#5AC8FA" />
+                            </View>
+                            <Text style={styles.coverageTitle}>Flood</Text>
+                            <Text style={styles.coverageDescription}>Coverage for water damage</Text>
+                            <View style={[styles.coverageBadge, styles.standardBadge]}>
+                                <Text style={[styles.coverageBadgeText, { color: '#5AC8FA' }]}>Standard</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles.coverageCard}>
+                            <View style={[styles.coverageIconContainer, { backgroundColor: 'rgba(255, 45, 85, 0.1)' }]}>
+                                <MaterialCommunityIcons name="shield-car" size={24} color="#FF2D55" />
+                            </View>
+                            <Text style={styles.coverageTitle}>Theft</Text>
+                            <Text style={styles.coverageDescription}>Protection against theft</Text>
+                            <View style={[styles.coverageBadge, styles.premiumBadge]}>
+                                <Text style={[styles.coverageBadgeText, { color: '#FF2D55' }]}>Premium</Text>
+                            </View>
+                        </View>
+                    </View>
                 </View>
 
-                <View style={styles.actionsContainer}>
-                    <TouchableOpacity style={styles.actionButton}>
-                        <FontAwesome5 name="tasks" size={20} color={Colors.primary} />
-                        <Text style={styles.actionText}>Complete Tasks</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.actionButton}>
-                        <MaterialCommunityIcons name="gift" size={20} color={Colors.primary} />
-                        <Text style={styles.actionText}>Claim Rewards</Text>
-                    </TouchableOpacity>
-                </View>
+                {/* End of ScrollView */}
             </ScrollView>
         </SafeAreaView>
-        // <SafeAreaView style={{ flex: 1 }}>
-        // </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 100,
         backgroundColor: Colors.background,
     },
-    scoreCard: {
-        backgroundColor: Colors.primary,
-        width: "100%",
-        paddingVertical: 24,
-        paddingHorizontal: 16,
-        alignItems: "center",
-    },
-    scoreTitle: {
-        color: Colors.textLight,
-        fontSize: 18,
-        fontFamily: Fonts.SfProDisplay.Semibold,
-        marginBottom: 20,
-    },
-    scoreContainer: {
-        position: "relative",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    scoreTextContainer: {
-        position: "absolute",
-        alignItems: "center",
-    },
-    scoreStatus: {
-        color: Colors.textLight,
-        fontSize: 16,
-        fontFamily: Fonts.SfProDisplay.Medium,
-    },
-    scoreValue: {
-        color: Colors.textLight,
-        fontSize: 48,
-        fontFamily: Fonts.SfProDisplay.Bold,
-    },
-    scoreScale: {
-        flexDirection: "row",
-        width: "100%",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginTop: 10,
-    },
-    scoreMin: {
-        color: Colors.textLight,
-        fontSize: 14,
-        fontFamily: Fonts.SfProDisplay.Regular,
-    },
-    scoreMax: {
-        color: Colors.textLight,
-        fontSize: 14,
-        fontFamily: Fonts.SfProDisplay.Regular,
-    },
-    improvementContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    improvementText: {
-        color: Colors.textLight,
-        fontSize: 12,
-        marginLeft: 4,
-        fontFamily: Fonts.SfProDisplay.Regular,
-    },
-    metricsContainer: {
-        marginHorizontal: 16,
-        marginTop: 24,
-        marginBottom: 16,
-    },
-    metricsTitle: {
-        fontSize: 18,
-        fontFamily: Fonts.SfProDisplay.Semibold,
-        marginBottom: 16,
-        color: Colors.textPrimary,
-    },
-    metricItem: {
-        backgroundColor: "white",
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 3,
-        elevation: 2,
-    },
-    metricHeader: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 8,
-    },
-    metricIconContainer: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: Colors.background,
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: 12,
-    },
-    metricTitleContainer: {
+    scrollView: {
         flex: 1,
     },
-    metricTitle: {
+    headerContainer: {
+        overflow: 'hidden',
+        paddingBottom: 10,
+        backgroundColor: Colors.primary,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 30,
+    },
+    headerGreeting: {
         fontSize: 16,
+        color: Colors.textLight,
+        fontFamily: Fonts.SfProDisplay.Medium,
+        opacity: 0.9,
+    },
+    headerTitle: {
+        fontSize: 30,
+        color: Colors.textLight,
+        fontFamily: Fonts.SfProDisplay.Bold,
+        marginTop: 4,
+    },
+    headerActions: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    notificationButton: {
+        padding: 8,
+        position: 'relative',
+    },
+    notificationBadge: {
+        position: 'absolute',
+        top: 6,
+        right: 6,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#FF3B30',
+        zIndex: 1,
+        borderWidth: 1,
+        borderColor: Colors.textLight,
+    },
+    sectionContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 20,
+        marginBottom: 5,
+    },
+    sectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    sectionTitle: {
+        fontSize: 22,
+        color: Colors.textPrimary,
+        fontFamily: Fonts.SfProDisplay.Semibold,
+        marginBottom: 16,
+    },
+    viewAllButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    viewAllText: {
+        color: Colors.primary,
+        fontSize: 14,
+        fontFamily: Fonts.SfProDisplay.Medium,
+        marginRight: 4,
+    },
+    achievementsScrollView: {
+        marginLeft: -5,
+    },
+    achievementCard: {
+        backgroundColor: Colors.textLight,
+        padding: 20,
+        borderRadius: 16,
+        marginRight: 16,
+        width: 250,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    achievementHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    achievementIconContainer: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    achievementPoints: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        backgroundColor: 'rgba(76, 217, 100, 0.1)',
+        borderRadius: 12,
+    },
+    achievementPointsText: {
+        color: '#4CD964',
+        fontFamily: Fonts.SfProDisplay.Bold,
+        fontSize: 14,
+    },
+    achievementTitle: {
+        fontSize: 18,
+        color: Colors.textPrimary,
+        fontFamily: Fonts.SfProDisplay.Semibold,
+        marginBottom: 8,
+    },
+    achievementDescription: {
+        fontSize: 14,
+        color: Colors.textMuted,
+        fontFamily: Fonts.SfProDisplay.Regular,
+        lineHeight: 20,
+        marginBottom: 16,
+    },
+    achievementDate: {
+        fontSize: 14,
+        color: Colors.textSecondary,
+        fontFamily: Fonts.SfProDisplay.Regular,
+    },
+    policyCard: {
+        backgroundColor: Colors.textLight,
+        padding: 20,
+        borderRadius: 16,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+    statusIndicator: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 4,
+        backgroundColor: '#4CD964',
+    },
+    statusDot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#4CD964',
+        position: 'absolute',
+        top: 20,
+        left: -2,
+    },
+    policyInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    carImageContainer: {
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: 'rgba(8, 103, 90, 0.1)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 16,
+    },
+    policyDetails: {
+        flex: 1,
+    },
+    carModel: {
+        fontSize: 18,
         fontFamily: Fonts.SfProDisplay.Semibold,
         color: Colors.textPrimary,
     },
-    metricStatus: {
+    licensePlate: {
         fontSize: 14,
         fontFamily: Fonts.SfProDisplay.Regular,
+        color: Colors.textMuted,
+        marginTop: 4,
+        marginBottom: 8,
     },
-    statusExcellent: {
-        color: Colors.accent,
+    policyStatusChip: {
+        backgroundColor: 'rgba(76, 217, 100, 0.1)',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+        alignSelf: 'flex-start',
     },
-    statusGood: {
-        color: Colors.primary,
-    },
-    statusFair: {
-        color: "#FF9500",
-    },
-    metricScoreContainer: {
-        alignItems: "flex-end",
-    },
-    metricScore: {
-        fontSize: 16,
-        fontFamily: Fonts.SfProDisplay.Bold,
-        color: Colors.textPrimary,
-    },
-    metricChange: {
-        fontSize: 14,
+    policyStatusText: {
+        color: '#4CD964',
+        fontSize: 12,
         fontFamily: Fonts.SfProDisplay.Medium,
     },
-    positive: {
-        color: Colors.accent,
+    arrowButton: {
+        padding: 4,
     },
-    negative: {
-        color: "#FF3B30",
+    arrowCircle: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: 'rgba(31, 149, 211, 0.1)',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    metricDescription: {
-        fontSize: 14,
-        color: Colors.textSecondary,
-        lineHeight: 20,
-        fontFamily: Fonts.SfProDisplay.Regular,
-    },
-    actionsContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginHorizontal: 16,
-        marginBottom: 16,
-    },
-    actionButton: {
-        backgroundColor: "white",
-        borderRadius: 12,
+    policyDateContainer: {
+        flexDirection: 'row',
+        marginTop: 16,
+        backgroundColor: Colors.textLight,
+        borderRadius: 16,
         padding: 16,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "48%",
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.05,
-        shadowRadius: 3,
+        shadowRadius: 4,
         elevation: 2,
     },
-    actionText: {
+    policyDateItem: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateIconContainer: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        backgroundColor: 'rgba(31, 149, 211, 0.1)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    policyDateLabel: {
+        fontSize: 12,
+        color: Colors.textMuted,
+        fontFamily: Fonts.SfProDisplay.Regular,
+        marginBottom: 4,
+    },
+    policyDate: {
+        fontSize: 14,
         color: Colors.textPrimary,
         fontFamily: Fonts.SfProDisplay.Medium,
-        marginTop: 8,
+    },
+    divider: {
+        width: 1,
+        height: '100%',
+        backgroundColor: '#E0E0E0',
+        marginHorizontal: 16,
+    },
+    coverageGrid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    coverageCard: {
+        backgroundColor: Colors.textLight,
+        padding: 16,
+        borderRadius: 16,
+        width: '48%',
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+        position: 'relative',
+        minHeight: 160,
+    },
+    coverageIconContainer: {
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 12,
+    },
+    coverageTitle: {
+        fontSize: 16,
+        color: Colors.textPrimary,
+        fontFamily: Fonts.SfProDisplay.Semibold,
+        marginBottom: 6,
+    },
+    coverageDescription: {
+        fontSize: 12,
+        color: Colors.textMuted,
+        fontFamily: Fonts.SfProDisplay.Regular,
+        lineHeight: 16,
+        marginBottom: 24,
+    },
+    coverageBadge: {
+        position: 'absolute',
+        bottom: 16,
+        left: 16,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    basicBadge: {
+        backgroundColor: 'rgba(76, 217, 100, 0.1)',
+    },
+    standardBadge: {
+        backgroundColor: 'rgba(90, 200, 250, 0.1)',
+    },
+    premiumBadge: {
+        backgroundColor: 'rgba(255, 45, 85, 0.1)',
+    },
+    coverageBadgeText: {
+        fontSize: 11,
+        fontFamily: Fonts.SfProDisplay.Medium,
     },
 });
 
