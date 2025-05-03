@@ -40,6 +40,15 @@ export const miscApi = createApi({
                 }
             },
         }),
+        
+        // Calculate insurance price based on vehicle details
+        calculateInsurance: builder.query({
+            query: (vehicleData) => ({
+                url: '/misc/calculate-insurance',
+                method: 'GET',
+                body: vehicleData,
+            }),
+        }),
     })
 });
 
@@ -47,4 +56,5 @@ export const {
     useGetCheckupsQuery,
     useCreateReportMutation,
     useDemandPaymentMutation,
+    useCalculateInsuranceQuery,
 } = miscApi;

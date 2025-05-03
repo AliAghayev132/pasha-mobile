@@ -25,7 +25,7 @@ const Stack = createStackNavigator();
 const MainNavigation = ({ route }) => {
     return (
         <MainLayout route={route}>
-            <Stack.Navigator initialRouteName='insurance' screenOptions={{ headerShown: false }}>
+            <Stack.Navigator initialRouteName='home' screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="home" component={HomeScreen} />
                 <Stack.Screen name="profile" component={ProfileScreen} />
                 <Stack.Screen name='language' component={LanguageScreen} />

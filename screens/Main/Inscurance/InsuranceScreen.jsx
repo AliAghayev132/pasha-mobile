@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Colors from '@constants/Colors';
 import Fonts from '@constants/Fonts';
 import { Picker } from '@react-native-picker/picker';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, StatusBar, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform, StatusBar, Image, ActivityIndicator, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -118,6 +118,73 @@ const InsuranceScreen = ({ navigation }) => {
   const [condition, setCondition] = useState('new');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [calculationResult, setCalculationResult] = useState(null);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchInsuranceCalculation = async (formData) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const conditionMap = {
+        'new': 'yeni',
+        'secondhand': 'eski',
+        'damaged': 'çok hasarlı'
+      };
+
+      const brandApiNameMap = {
+        'bmw': 'BMW',
+        'mercedes': 'Mercedes',
+        'audi': 'Audi', 
+        'toyota': 'Toyota',
+        'honda': 'Honda',
+        'volkswagen': 'Volkswagen',
+        'ford': 'Ford',
+        'hyundai': 'Hyundai',
+        'kia': 'Kia'
+      };
+
+      const estimatedPrice = 30000;
+
+      const requestData = {
+        year: formData.year,
+        condition: conditionMap[formData.condition],
+        brand: brandApiNameMap[formData.carBrand] || formData.carBrand,
+        model: formData.carModel,
+        mileage: parseInt(formData.kilometers) || 0,
+        price: estimatedPrice
+      };
+
+      const response = await fetch('http://10.10.103.179:3500/api/user/misc/calculate-insurance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      const result = await response.json();
+
+      console.log('====================================');
+      console.log({result});
+      console.log('====================================');
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to calculate insurance');
+      }
+
+      setCalculationResult(result.data);
+      setShowResultModal(true);
+    } catch (err) {
+      setError(err.message || 'An error occurred while calculating insurance');
+      console.error('Insurance calculation error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = () => {
     const formData = {
       carBrand,
@@ -127,12 +194,27 @@ const InsuranceScreen = ({ navigation }) => {
       condition
     };
     console.log('Form submitted:', formData);
+
+    if (!carBrand || !carModel || !kilometers) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    fetchInsuranceCalculation(formData);
   };
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || year;
     setShowDatePicker(Platform.OS === 'ios');
     setYear(currentDate);
+  };
+
+  const handleContinue = () => {
+    setShowResultModal(false);
+  };
+
+  const handleCancel = () => {
+    setShowResultModal(false);
   };
 
   return (
@@ -255,12 +337,26 @@ const InsuranceScreen = ({ navigation }) => {
           </View>
         </View>
 
+        {error && (
+          <View style={styles.errorContainer}>
+            <Ionicons name="alert-circle" size={20} color={Colors.error} />
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+
         <TouchableOpacity
-          style={styles.submitButton}
+          style={[styles.submitButton, loading && styles.submitButtonDisabled]}
           onPress={handleSubmit}
+          disabled={loading}
         >
-          <Text style={styles.submitButtonText}>Calculate Insurance</Text>
-          <Ionicons name="arrow-forward" size={22} color={Colors.textLight} />
+          {loading ? (
+            <ActivityIndicator size="small" color={Colors.textLight} />
+          ) : (
+            <>
+              <Text style={styles.submitButtonText}>Calculate Insurance</Text>
+              <Ionicons name="arrow-forward" size={22} color={Colors.textLight} />
+            </>
+          )}
         </TouchableOpacity>
 
         <View style={styles.note}>
@@ -270,6 +366,51 @@ const InsuranceScreen = ({ navigation }) => {
           </Text>
         </View>
       </ScrollView>
+
+      <Modal
+        visible={showResultModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCancel}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Ionicons name="checkmark-circle" size={40} color={Colors.success} />
+              <Text style={styles.modalTitle}>Insurance Estimate</Text>
+            </View>
+
+            <View style={styles.resultContainer}>
+              <View style={styles.resultItem}>
+                <Text style={styles.resultLabel}>Insurance Price:</Text>
+                <Text style={styles.resultValue}>
+                  AZN{calculationResult?.insurancePrice?.toFixed(2) || '0.00'}
+                </Text>
+              </View>
+
+              <View style={styles.resultItem}>
+                <Text style={styles.resultLabel}>Monthly Payment:</Text>
+                <Text style={styles.resultValue}>
+                  AZN{calculationResult?.monthlyPayment?.toFixed(2) || '0.00'}/month
+                </Text>
+              </View>
+            </View>
+
+            <Text style={styles.modalQuestion}>Would you like to continue with this insurance plan?</Text>
+
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity style={styles.modalButtonCancel} onPress={handleCancel}>
+                <Text style={styles.modalButtonCancelText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.modalButtonContinue} onPress={handleContinue}>
+                <Text style={styles.modalButtonContinueText}>Continue</Text>
+                <Ionicons name="arrow-forward" size={18} color={Colors.textLight} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -425,7 +566,117 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     marginLeft: 6,
     flex: 1,
-  }
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.errorLight,
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  errorText: {
+    fontFamily: Fonts.SfProDisplay.Medium,
+    fontSize: 14,
+    color: Colors.error,
+    marginLeft: 8,
+    flex: 1,
+  },
+  submitButtonDisabled: {
+    backgroundColor: Colors.primaryLight,
+    shadowOpacity: 0.1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContainer: {
+    backgroundColor: Colors.textLight,
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalHeader: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontFamily: Fonts.SfProDisplay.Bold,
+    fontSize: 24,
+    color: Colors.textPrimary,
+    marginTop: 12,
+  },
+  resultContainer: {
+    backgroundColor: Colors.background,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+  },
+  resultItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  resultLabel: {
+    fontFamily: Fonts.SfProDisplay.Medium,
+    fontSize: 16,
+    color: Colors.textSecondary,
+  },
+  resultValue: {
+    fontFamily: Fonts.SfProDisplay.Bold,
+    fontSize: 18,
+    color: Colors.primary,
+  },
+  modalQuestion: {
+    fontFamily: Fonts.SfProDisplay.Medium,
+    fontSize: 16,
+    color: Colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButtonCancel: {
+    flex: 1,
+    paddingVertical: 12,
+    marginRight: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.textMuted,
+    alignItems: 'center',
+  },
+  modalButtonCancelText: {
+    fontFamily: Fonts.SfProDisplay.Medium,
+    fontSize: 16,
+    color: Colors.textSecondary,
+  },
+  modalButtonContinue: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: Colors.primary,
+    paddingVertical: 12,
+    marginLeft: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalButtonContinueText: {
+    fontFamily: Fonts.SfProDisplay.Medium,
+    fontSize: 16,
+    color: Colors.textLight,
+    marginRight: 8,
+  },
 });
 
 export default InsuranceScreen;
