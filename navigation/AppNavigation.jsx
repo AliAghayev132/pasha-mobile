@@ -7,6 +7,7 @@ import { NavigationContainer, createNavigationContainerRef } from "@react-naviga
 
 // React Hooks
 import { useState, useEffect } from "react";
+import AuthNavigation from "./AuthNavigation";
 
 export const navigationRef = createNavigationContainerRef();
 
@@ -31,6 +32,7 @@ const AppNavigation = () => {
 
     return <NavigationContainer ref={navigationRef}>
         <MainNavigation route={routeName} />
+        {/* <AuthNavigation /> */}
         {/* {
             test ? <MainNavigation /> : <MainNavigation />
         } */}

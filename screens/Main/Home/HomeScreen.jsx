@@ -1,22 +1,11 @@
-<<<<<<< HEAD
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import Colors from '@constants/Colors';
 import Fonts from '@constants/Fonts';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-=======
-import { useNavigation } from "@react-navigation/native";
-import { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Svg, Circle, Path } from "react-native-svg";
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from "@expo/vector-icons";
-import Colors from "@constants/Colors";
-import Fonts from "@constants/Fonts";
->>>>>>> 2847a11bc74b8886a915f3120174cbbb5ae43f4f
 
 const HomeScreen = () => {
     return (
-<<<<<<< HEAD
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -58,16 +47,6 @@ const HomeScreen = () => {
                             <Text style={styles.achievementTitle}>Safe Driver</Text>
                             <Text style={styles.achievementDescription}>
                                 Completed 50 trips without any incidents
-=======
-            <ScrollView style={styles.container}>
-                <View style={styles.scoreCard}>
-                    <Text style={styles.scoreTitle}>Your average driving score</Text>
-                    <View style={styles.scoreContainer}>
-                        <ProgressCircle progress={calculateProgress(score, 10)} size={220} strokeWidth={18} />
-                        <View style={styles.scoreTextContainer}>
-                            <Text style={styles.scoreStatus}>
-                                {score >= 8 ? "Excellent" : score >= 6 ? "Good" : score >= 4 ? "Fair" : "Poor"}
->>>>>>> 2847a11bc74b8886a915f3120174cbbb5ae43f4f
                             </Text>
                             <Text style={styles.achievementDate}>Earned today</Text>
                         </View>
@@ -221,12 +200,7 @@ const HomeScreen = () => {
 
                 {/* End of ScrollView */}
             </ScrollView>
-<<<<<<< HEAD
         </SafeAreaView>
-=======
-        // <SafeAreaView style={{ flex: 1 }}>
-        // </SafeAreaView>
->>>>>>> 2847a11bc74b8886a915f3120174cbbb5ae43f4f
     );
 };
 
@@ -324,9 +298,9 @@ const styles = StyleSheet.create({
         width: 250,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
+        shadowOpacity: 0,
+        shadowRadius: 0,
+        elevation: 0,
     },
     achievementHeader: {
         flexDirection: 'row',
